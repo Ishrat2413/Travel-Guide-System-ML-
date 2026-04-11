@@ -1,84 +1,128 @@
-# Destination Diary
+# Travel Guide System
 
-Destination Diary is a comprehensive tour guide system designed to enhance your travel experiences. This project was developed collaboratively by a team of four members using the MERN stack. It leverages the power of Tailwind CSS and DaisyUI for styling and JWT for secure authentication.
+This repository contains **three services**:
 
-## Table of Contents
+1. `client` → React + Vite frontend
+2. `server` → Node.js + Express + MongoDB API (feedback, login, itineraries)
+3. `API` → Flask + ML API (recommendations, budget split)
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+## How the system works
 
-## Introduction
+- Frontend calls Node API for:
+  - `/feedback`
+  - `/login`
+  - `/itinerary`, `/itineraries/:userId`
+- Frontend calls Flask API for:
+  - `/recomend/:city/:liked`
+  - `/budget/:budget/:days`
+- Firebase Auth is used in frontend for registration/login state.
 
-Destination Diary aims to provide travelers with an intuitive platform to discover and document their travel experiences. Users can explore various destinations, read and write reviews, and keep a diary of their journeys.
+## Prerequisites
 
-## Features
+- Node.js 18+
+- Python 3.10+ (recommended)
+- MongoDB Atlas connection string
 
-- **User Authentication:** Secure login and signup using JWT.
-- **Destination Discovery:** Explore destinations with detailed descriptions and user reviews.
-- **User Reviews:** Read and write reviews for different destinations.
-- **Travel Diary:** Keep a personal diary of your travels.
-- **Responsive Design:** Mobile-first design with Tailwind CSS and DaisyUI.
+## 1) Local setup
 
-## Tech Stack
-
-- **Frontend:** React, Tailwind CSS, DaisyUI
-- **Backend:** Node.js, Express
-- **Database:** MongoDB
-- **Authentication:** JWT (JSON Web Tokens)
-
-## Installation
-
-Follow these steps to set up the project locally.
-
-### Prerequisites
-
-- Node.js
-- MongoDB
-
-### Clone the repository
+### A. Server (Node API)
 
 ```bash
-git clone https://github.com/yourusername/destination-diary.git
-cd destination-diary
-Install dependencies
-Backend
-bash
-Copy code
-cd backend
+cd server
 npm install
-Frontend
-bash
-Copy code
-cd frontend
+copy .env.example .env
+```
+
+Update `server/.env`:
+
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+```
+
+Run:
+
+```bash
+npm start
+```
+
+### B. Python API (Flask + ML)
+
+```bash
+cd API
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+```
+
+Run:
+
+```bash
+python main.py
+```
+
+Default Flask port is `5001`.
+
+### C. Frontend (React)
+
+```bash
+cd client
 npm install
-Environment Variables
-Create a .env file in the backend directory and add the following variables:
+copy .env.example .env
+```
 
-makefile
-Copy code
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-Running the application
-Backend
-bash
-Copy code
-cd backend
-npm start
-Frontend
-bash
-Copy code
-cd frontend
-npm start
-Open your browser and go to http://localhost:3000.
+Update `client/.env` if needed:
 
-Acknowledgements
-MERN Stack
-Tailwind CSS
-DaisyUI
-JWT
+```env
+VITE_NODE_API_URL=http://localhost:5000
+VITE_ML_API_URL=http://localhost:5001
+```
+
+Run:
+
+```bash
+npm run dev
+```
+
+Open the URL shown by Vite (usually `http://localhost:5173`).
+
+---
+
+## 2) Publish frontend on Vercel
+
+Yes, you can publish this project on Vercel.
+
+### Recommended architecture
+
+- Deploy `client` on Vercel.
+- Deploy `server` and `API` on Render/Railway/Fly.io (or any backend host).
+- Point frontend env vars to those public backend URLs.
+
+### Steps
+
+1. Push code to GitHub.
+2. In Vercel, create a new project and set **Root Directory** to `client`.
+3. Build settings:
+   - Build command: `npm run build`
+   - Output directory: `dist`
+4. Add environment variables in Vercel project settings:
+   - `VITE_NODE_API_URL=https://your-node-api-domain`
+   - `VITE_ML_API_URL=https://your-flask-api-domain`
+5. Deploy.
+
+`client/vercel.json` is included for SPA route rewrites.
+
+## Important note about hosting everything on Vercel
+
+- Frontend on Vercel: ✅ easy and recommended.
+- Current Node + Flask services on Vercel: ⚠️ not recommended without refactor to serverless functions and startup/runtime optimization.
+
+## Quick health checks
+
+- Node API: `http://localhost:5000/` should respond.
+- Flask API:
+  - `http://localhost:5001/budget/1000/3`
+  - `http://localhost:5001/recomend/Dhaka/Hill`
+
+If both work and frontend `.env` is correct, the app should run end-to-end.

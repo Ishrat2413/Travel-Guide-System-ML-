@@ -2,6 +2,7 @@ import { Calendar, Clock, MapPin, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import Swal from "sweetalert2";
+import { NODE_API_BASE_URL } from "../../config/api";
 export default function ItinerariesViewer({ userId }) {
   const [itineraries, setItineraries] = useState([]);
   const [selectedItinerary, setSelectedItinerary] = useState(null);
@@ -13,7 +14,7 @@ export default function ItinerariesViewer({ userId }) {
   const fetchItineraries = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/itineraries/${userId}`
+        `${NODE_API_BASE_URL}/itineraries/${userId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -26,7 +27,7 @@ export default function ItinerariesViewer({ userId }) {
 
   const fetchItineraryDetails = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/itinerary/${id}`);
+      const response = await fetch(`${NODE_API_BASE_URL}/itinerary/${id}`);
       if (response.ok) {
         const data = await response.json();
         setSelectedItinerary(data);
@@ -49,7 +50,7 @@ export default function ItinerariesViewer({ userId }) {
       if (result.isConfirmed) {
         try {
           const response = await fetch(
-            `http://localhost:5000/itinerary/${id}`,
+            `${NODE_API_BASE_URL}/itinerary/${id}`,
             {
               method: "DELETE",
             }

@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { ML_API_BASE_URL } from '../../config/api';
 
 const Recommend = () => {
     const [recommendations, setRecommendations] = useState(null);
@@ -14,8 +15,8 @@ const Recommend = () => {
         const budget = form.budget.value;
         const days = form.days.value;
 
-        const recommendApiUrl = `http://127.0.0.1:5000/recomend/${city}/${typePlace}`;
-        const budgetApiUrl = `http://127.0.0.1:5000/budget/${budget}/${days}`;
+        const recommendApiUrl = `${ML_API_BASE_URL}/recomend/${city}/${typePlace}`;
+        const budgetApiUrl = `${ML_API_BASE_URL}/budget/${budget}/${days}`;
 
         try {
             const [recommendResponse, budgetResponse] = await Promise.all([

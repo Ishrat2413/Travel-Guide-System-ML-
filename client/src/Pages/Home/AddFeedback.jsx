@@ -1,5 +1,6 @@
 import { Typewriter } from "react-simple-typewriter";
 import Swal from "sweetalert2";
+import { NODE_API_BASE_URL } from "../../config/api";
 // import FeedbackPart from "./FeedbackPart";
 
 const FeedbackK = () => {
@@ -20,7 +21,7 @@ const FeedbackK = () => {
     console.log(feedbackPost);
 
     // send feedback to the server
-    fetch("http://localhost:5000/feedback", {
+    fetch(`${NODE_API_BASE_URL}/feedback`, {
       method: "POST",
       headers: {
         "content-type": "application/json",

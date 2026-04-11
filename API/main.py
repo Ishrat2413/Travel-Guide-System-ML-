@@ -1,13 +1,17 @@
 from flask import Flask, jsonify
 import numpy as np
 import pandas as pd
+from pathlib import Path
+import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error
 from flask_cors import CORS
 
-df = pd.read_csv('E:/test2/Travel-Guide-System/API/synthetic_travel_data.csv', sep=',')
+BASE_DIR = Path(__file__).resolve().parent
+
+df = pd.read_csv(BASE_DIR / 'synthetic_travel_data.csv', sep=',')
 
 df['accommodation_pct'] = df['accommodation_cost'] / df['total_cost']
 df['food_pct'] = df['food_cost'] / df['total_cost']
@@ -75,7 +79,7 @@ def recomend(city, liked):
         from sklearn.feature_extraction.text import TfidfVectorizer
         from sklearn.metrics.pairwise import cosine_similarity
 
-        df = pd.read_csv("E:/test2/Travel-Guide-System/API/list1.csv", sep=',')
+        df = pd.read_csv(BASE_DIR / 'list1.csv', sep=',')
 
 
         country = 'Bangladesh'
@@ -117,7 +121,7 @@ def recomend(city, liked):
 
 
 
-        df2 = pd.read_csv('E:/test2/Travel-Guide-System/API/place.csv', sep=',')
+        df2 = pd.read_csv(BASE_DIR / 'place.csv', sep=',')
 
         filtered_df = df2[df2['District'].isin(specified_districts)]
 
@@ -182,4 +186,6 @@ def predict_budget_split(budget, days):
     return jsonify(output)
 
 if __name__ == "__main__":
-   app.run(debug = True)
+    host = os.getenv("FLASK_HOST", "0.0.0.0")
+    port = int(os.getenv("FLASK_PORT", "5001"))
+    app.run(host=host, port=port, debug=True)

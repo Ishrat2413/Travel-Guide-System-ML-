@@ -2,6 +2,7 @@ import { PlusCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import PropTypes from 'prop-types';
+import { NODE_API_BASE_URL } from "../../config/api";
 
 export default function ItineraryBuilder({ userId }) {
   const [itinerary, setItinerary] = useState({
@@ -12,7 +13,7 @@ export default function ItineraryBuilder({ userId }) {
 
   const saveItinerary = async () => {
     try {
-      const response = await fetch("http://localhost:5000/itinerary", {
+      const response = await fetch(`${NODE_API_BASE_URL}/itinerary`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

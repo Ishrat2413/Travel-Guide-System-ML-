@@ -8,6 +8,7 @@ import ErrorPage from "../Pages/Errorpage/Errorpage";
 import UserPage from "../Pages/UserPage/UserPage";
 import Recommend from "../Pages/Recommend/Recommend";
 import Itinerary from "../Pages/Itinerary";
+import { NODE_API_BASE_URL } from "../config/api";
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +19,7 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Home></Home>,
-        loader: () => fetch("http://localhost:5000/feedback"),
+        loader: () => fetch(`${NODE_API_BASE_URL}/feedback`),
       },
       {
         path: "/feedback",

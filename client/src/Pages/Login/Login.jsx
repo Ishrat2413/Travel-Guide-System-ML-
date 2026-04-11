@@ -2,6 +2,7 @@ import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/aut
 import auth from "../../Firebase/firebase.config";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { NODE_API_BASE_URL } from "../../config/api";
 
 const Login = () => {
     const [loginError, setLoginError] = useState('');
@@ -33,7 +34,7 @@ const Login = () => {
                     uid: result.user.uid,
                 };
 
-                const response = await fetch("http://localhost:5000/login", {
+                const response = await fetch(`${NODE_API_BASE_URL}/login`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
