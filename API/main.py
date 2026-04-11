@@ -60,6 +60,24 @@ app = Flask(__name__)
 
 CORS(app) 
 
+
+@app.route('/')
+def root():
+    return jsonify({
+        "status": "ok",
+        "service": "travel-guide-system-ml",
+        "endpoints": [
+            "/recomend/<city>/<liked>",
+            "/budget/<budget>/<days>",
+            "/health"
+        ]
+    })
+
+
+@app.route('/health')
+def health():
+    return jsonify({"status": "healthy"})
+
 @app.route('/recomend/<string:city>/<string:liked>')
 
 def recomend(city, liked):
