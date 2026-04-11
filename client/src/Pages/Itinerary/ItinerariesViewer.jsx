@@ -1,6 +1,6 @@
 import { Calendar, Clock, MapPin, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import Swal from "sweetalert2";
 import { NODE_API_BASE_URL } from "../../config/api";
 export default function ItinerariesViewer({ userId }) {
@@ -14,7 +14,7 @@ export default function ItinerariesViewer({ userId }) {
   const fetchItineraries = async () => {
     try {
       const response = await fetch(
-        `${NODE_API_BASE_URL}/itineraries/${userId}`
+        `${NODE_API_BASE_URL}/itineraries/${userId}`,
       );
       if (response.ok) {
         const data = await response.json();
@@ -49,15 +49,12 @@ export default function ItinerariesViewer({ userId }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await fetch(
-            `${NODE_API_BASE_URL}/itinerary/${id}`,
-            {
-              method: "DELETE",
-            }
-          );
+          const response = await fetch(`${NODE_API_BASE_URL}/itinerary/${id}`, {
+            method: "DELETE",
+          });
           if (response.ok) {
             setItineraries(
-              itineraries.filter((itinerary) => itinerary._id !== id)
+              itineraries.filter((itinerary) => itinerary._id !== id),
             );
             if (selectedItinerary && selectedItinerary._id === id) {
               setSelectedItinerary(null);
@@ -71,58 +68,55 @@ export default function ItinerariesViewer({ userId }) {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Your Itineraries</h1>
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title mb-4">Itinerary List</h2>
+    <div className='container mx-auto p-4'>
+      <h1 className='text-3xl font-bold mb-4'>Your Itineraries</h1>
+      <div className='grid md:grid-cols-2 gap-4'>
+        <div className='card bg-base-100 shadow-xl'>
+          <div className='card-body'>
+            <h2 className='card-title mb-4'>Itinerary List</h2>
             {itineraries.map((itinerary) => (
               <div
                 key={itinerary._id}
-                className="flex items-center justify-center mb-2"
-              >
+                className='flex items-center justify-center mb-2'>
                 <button
-                  className="btn btn-outline btn-block text-left justify-start flex-grow mr-2"
-                  onClick={() => fetchItineraryDetails(itinerary._id)}
-                >
+                  className='btn btn-outline btn-block text-left justify-start flex-grow mr-2'
+                  onClick={() => fetchItineraryDetails(itinerary._id)}>
                   {itinerary.title}
                 </button>
                 <button
-                  className="btn btn-square btn-sm btn-error"
+                  className='btn btn-square btn-sm btn-error'
                   onClick={() => deleteItinerary(itinerary._id)}
-                  aria-label={`Delete ${itinerary.title}`}
-                >
+                  aria-label={`Delete ${itinerary.title}`}>
                   <Trash2 size={16} />
                 </button>
               </div>
             ))}
           </div>
         </div>
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title mb-4">Itinerary Details</h2>
+        <div className='card bg-base-100 shadow-xl'>
+          <div className='card-body'>
+            <h2 className='card-title mb-4'>Itinerary Details</h2>
             {selectedItinerary ? (
               <div>
-                <h3 className="text-xl font-semibold mb-2">
+                <h3 className='text-xl font-semibold mb-2'>
                   {selectedItinerary.title}
                 </h3>
                 {selectedItinerary.destinations.map((destination) => (
-                  <div key={destination.id} className="mb-4">
-                    <div className="flex items-center gap-2 mb-2">
+                  <div key={destination.id} className='mb-4'>
+                    <div className='flex items-center gap-2 mb-2'>
                       <MapPin size={16} />
-                      <span className="font-medium">{destination.name}</span>
-                      <span className="text-sm text-gray-500">
-                        <Calendar size={14} className="inline mr-1" />
+                      <span className='font-medium'>{destination.name}</span>
+                      <span className='text-sm text-gray-500'>
+                        <Calendar size={14} className='inline mr-1' />
                         {destination.date}
                       </span>
                     </div>
-                    <ul className="list-disc list-inside pl-4">
+                    <ul className='list-disc list-inside pl-4'>
                       {destination.activities.map((activity) => (
-                        <li key={activity.id} className="mb-1">
-                          <span className="font-medium">{activity.name}</span>
-                          <span className="text-sm text-gray-500 ml-2">
-                            <Clock size={14} className="inline mr-1" />
+                        <li key={activity.id} className='mb-1'>
+                          <span className='font-medium'>{activity.name}</span>
+                          <span className='text-sm text-gray-500 ml-2'>
+                            <Clock size={14} className='inline mr-1' />
                             {activity.time}
                           </span>
                         </li>
@@ -132,7 +126,7 @@ export default function ItinerariesViewer({ userId }) {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500">
+              <p className='text-gray-500'>
                 Select an itinerary to view details
               </p>
             )}
@@ -147,8 +141,5 @@ export default function ItinerariesViewer({ userId }) {
 //   userId: PropTypes.object,
 // }
 ItinerariesViewer.propTypes = {
-  userId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };

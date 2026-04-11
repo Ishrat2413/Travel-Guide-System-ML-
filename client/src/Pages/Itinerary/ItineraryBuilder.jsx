@@ -1,7 +1,7 @@
 import { PlusCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { NODE_API_BASE_URL } from "../../config/api";
 
 export default function ItineraryBuilder({ userId }) {
@@ -50,13 +50,13 @@ export default function ItineraryBuilder({ userId }) {
       destinations: prev.destinations.map((dest) =>
         dest.id === destinationId
           ? {
-            ...dest,
-            activities: [
-              ...dest.activities,
-              { id: Date.now().toString(), name: "", time: "" },
-            ],
-          }
-          : dest
+              ...dest,
+              activities: [
+                ...dest.activities,
+                { id: Date.now().toString(), name: "", time: "" },
+              ],
+            }
+          : dest,
       ),
     }));
   };
@@ -65,7 +65,7 @@ export default function ItineraryBuilder({ userId }) {
     setItinerary((prev) => ({
       ...prev,
       destinations: prev.destinations.map((dest) =>
-        dest.id === id ? { ...dest, [field]: value } : dest
+        dest.id === id ? { ...dest, [field]: value } : dest,
       ),
     }));
   };
@@ -76,12 +76,12 @@ export default function ItineraryBuilder({ userId }) {
       destinations: prev.destinations.map((dest) =>
         dest.id === destinationId
           ? {
-            ...dest,
-            activities: dest.activities.map((act) =>
-              act.id === activityId ? { ...act, [field]: value } : act
-            ),
-          }
-          : dest
+              ...dest,
+              activities: dest.activities.map((act) =>
+                act.id === activityId ? { ...act, [field]: value } : act,
+              ),
+            }
+          : dest,
       ),
     }));
   };
@@ -99,24 +99,24 @@ export default function ItineraryBuilder({ userId }) {
       destinations: prev.destinations.map((dest) =>
         dest.id === destinationId
           ? {
-            ...dest,
-            activities: dest.activities.filter(
-              (act) => act.id !== activityId
-            ),
-          }
-          : dest
+              ...dest,
+              activities: dest.activities.filter(
+                (act) => act.id !== activityId,
+              ),
+            }
+          : dest,
       ),
     }));
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Create New Itinerary</h2>
-      <div className="mb-4">
+    <div className='container mx-auto p-4'>
+      <h2 className='text-2xl font-bold mb-4'>Create New Itinerary</h2>
+      <div className='mb-4'>
         <input
-          type="text"
-          placeholder="Itinerary Title"
-          className="input input-bordered w-full"
+          type='text'
+          placeholder='Itinerary Title'
+          className='input input-bordered w-full'
           value={itinerary.title}
           onChange={(e) =>
             setItinerary((prev) => ({ ...prev, title: e.target.value }))
@@ -124,85 +124,82 @@ export default function ItineraryBuilder({ userId }) {
         />
       </div>
       {itinerary.destinations.map((destination) => (
-        <div key={destination.id} className="card bg-base-100 shadow-xl mb-4">
-          <div className="card-body">
-            <div className="flex justify-between items-center">
+        <div key={destination.id} className='card bg-base-100 shadow-xl mb-4'>
+          <div className='card-body'>
+            <div className='flex justify-between items-center'>
               <input
-                type="text"
-                placeholder="Destination"
-                className="input input-bordered w-full max-w-xs"
+                type='text'
+                placeholder='Destination'
+                className='input input-bordered w-full max-w-xs'
                 value={destination.name}
                 onChange={(e) =>
                   updateDestination(destination.id, "name", e.target.value)
                 }
               />
               <input
-                type="date"
-                className="input input-bordered"
+                type='date'
+                className='input input-bordered'
                 value={destination.date}
                 onChange={(e) =>
                   updateDestination(destination.id, "date", e.target.value)
                 }
               />
               <button
-                className="btn btn-square btn-sm"
-                onClick={() => removeDestination(destination.id)}
-              >
+                className='btn btn-square btn-sm'
+                onClick={() => removeDestination(destination.id)}>
                 <Trash2 size={16} />
               </button>
             </div>
-            <div className="divider">Activities</div>
+            <div className='divider'>Activities</div>
             {destination.activities.map((activity) => (
-              <div key={activity.id} className="flex items-center gap-2 mb-2">
+              <div key={activity.id} className='flex items-center gap-2 mb-2'>
                 <input
-                  type="text"
-                  placeholder="Activity"
-                  className="input input-bordered w-full"
+                  type='text'
+                  placeholder='Activity'
+                  className='input input-bordered w-full'
                   value={activity.name}
                   onChange={(e) =>
                     updateActivity(
                       destination.id,
                       activity.id,
                       "name",
-                      e.target.value
+                      e.target.value,
                     )
                   }
                 />
                 <input
-                  type="time"
-                  className="input input-bordered"
+                  type='time'
+                  className='input input-bordered'
                   value={activity.time}
                   onChange={(e) =>
                     updateActivity(
                       destination.id,
                       activity.id,
                       "time",
-                      e.target.value
+                      e.target.value,
                     )
                   }
                 />
                 <button
-                  className="btn btn-square btn-sm"
-                  onClick={() => removeActivity(destination.id, activity.id)}
-                >
+                  className='btn btn-square btn-sm'
+                  onClick={() => removeActivity(destination.id, activity.id)}>
                   <Trash2 size={16} />
                 </button>
               </div>
             ))}
             <button
-              className="btn btn-outline btn-sm"
-              onClick={() => addActivity(destination.id)}
-            >
-              <PlusCircle size={16} className="mr-2" /> Add Activity
+              className='btn btn-outline btn-sm'
+              onClick={() => addActivity(destination.id)}>
+              <PlusCircle size={16} className='mr-2' /> Add Activity
             </button>
           </div>
         </div>
       ))}
-      <div className="flex justify-between">
-        <button className="btn btn-primary" onClick={addDestination}>
-          <PlusCircle size={16} className="mr-2" /> Add Destination
+      <div className='flex justify-between'>
+        <button className='btn btn-primary' onClick={addDestination}>
+          <PlusCircle size={16} className='mr-2' /> Add Destination
         </button>
-        <button className="btn btn-success" onClick={saveItinerary}>
+        <button className='btn btn-success' onClick={saveItinerary}>
           Save Itinerary
         </button>
       </div>
@@ -212,4 +209,4 @@ export default function ItineraryBuilder({ userId }) {
 
 ItineraryBuilder.propTypes = {
   userId: PropTypes.object,
-}
+};

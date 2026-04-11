@@ -43,26 +43,24 @@ const FeedbackK = () => {
       });
   };
   return (
-    <div className="pb-12">
+    <div className='pb-12'>
       <div
         className="relative lg:w-full bg-[url('https://i.ibb.co/HPWNL44/photo-1645846673812-c68f52871d06.jpg')] bg-center bg-cover h-[400px] md:min-h-screen flex items-center"
         style={{
           backgroundImage: `linear-gradient(0deg, rgba(21, 11, 43, 0.9), rgba(21, 11, 43, 0) 100%), url('https://i.ibb.co/HPWNL44/photo-1645846673812-c68f52871d06.jpg')`,
-        }}
-      >
-        <div className="lg:max-w-[923px] mx-auto text-white text-center">
+        }}>
+        <div className='lg:max-w-[923px] mx-auto text-white text-center'>
           {/* <h1>Total Feedback: {feedback.length}</h1> */}
           <h1
             style={{ fontFamily: "Bree Serif" }}
-            className=" font-bold lg:text-[49px] bg-clip-text text-transparent bg-gradient-to-r from-slate-100 to-cyan-200"
-          >
+            className=' font-bold lg:text-[49px] bg-clip-text text-transparent bg-gradient-to-r from-slate-100 to-cyan-200'>
             Give us your Valuable Suggestions!
           </h1>
           <Typewriter
             words={["Your Suggestions", "Our Priority"]}
             loop={true}
             cursor
-            cursorStyle="_"
+            cursorStyle='_'
             typeSpeed={70}
             deleteSpeed={50}
             delaySpeed={1000}
@@ -71,25 +69,24 @@ const FeedbackK = () => {
           />
           <form
             onSubmit={handlePost}
-            className="flex flex-col md:flex-row gap-4 justify-center mt-5"
-          >
-            <div className=" flex flex-col md:flex-row gap-y-3 md:gap-x-4 ">
+            className='flex flex-col md:flex-row gap-4 justify-center mt-5'>
+            <div className=' flex flex-col md:flex-row gap-y-3 md:gap-x-4 '>
               <input
-                name="name"
-                type="text"
-                placeholder="Your Name"
-                className="input join-item text-black"
+                name='name'
+                type='text'
+                placeholder='Your Name'
+                className='input join-item text-black'
               />
               <input
-                name="exp"
-                type="text"
-                placeholder="Your Experience.."
-                className="input join-item text-black "
+                name='exp'
+                type='text'
+                placeholder='Your Experience..'
+                className='input join-item text-black '
               />
               <input
-                className="btn bg-[#33a978] join-item border-none rounded-lg"
-                type="submit"
-                value="Send"
+                className='btn bg-[#33a978] join-item border-none rounded-lg'
+                type='submit'
+                value='Send'
               />
             </div>
           </form>
