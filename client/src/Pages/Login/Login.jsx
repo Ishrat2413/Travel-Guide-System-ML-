@@ -1,22 +1,22 @@
-import {
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import auth from "../../Firebase/firebase.config";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { NODE_API_BASE_URL } from "../../config/api";
+import { AuthContext } from "../../providers/AuthProvider";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
+  const { logIn } = useContext(AuthContext);
   const [loginError, setLoginError] = useState("");
   const [loginSuccess, setLoginSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const emailRef = useRef(null);
 
   const handleLogIn = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email, password);
 
     // Reset Error & Success
     setLoginError("");
@@ -24,8 +24,7 @@ const Login = () => {
 
     try {
       // Login with email and password
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      console.log(result.user);
+      const result = await logIn(email, password);
 
       // Check if the email is verified
       if (result.user.emailVerified) {
@@ -54,8 +53,13 @@ const Login = () => {
         alert("Please verify your email address.");
       }
     } catch (error) {
-      console.log("Error", error);
-      setLoginError(error.message);
+      if (error?.message?.includes("Firebase is not configured")) {
+        setLoginError(
+          "Firebase setup is incomplete. Please restart the app after updating client/.env",
+        );
+      } else {
+        setLoginError(error.message || "Login failed. Please try again.");
+      }
     }
   };
 
@@ -70,12 +74,19 @@ const Login = () => {
     }
 
     // Send password reset email
+    if (!auth) {
+      setLoginError(
+        "Login is unavailable because Firebase is not configured in client/.env",
+      );
+      return;
+    }
+
     sendPasswordResetEmail(auth, email)
       .then(() => {
         alert("Please check your email for the reset link.");
       })
       .catch((error) => {
-        console.log(error);
+        setLoginError(error.message || "Failed to send password reset email.");
       });
   };
 
@@ -107,13 +118,22 @@ const Login = () => {
               <label className='label'>
                 <span className='label-text'>Password</span>
               </label>
-              <input
-                type='password'
-                name='password'
-                placeholder='Enter your Password'
-                className='input input-bordered'
-                required
-              />
+              <div className='relative'>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name='password'
+                  placeholder='Enter your Password'
+                  className='input input-bordered w-full pr-10'
+                  required
+                />
+                <button
+                  type='button'
+                  onClick={() => setShowPassword(!showPassword)}
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-base-content/70'
+                  aria-label={showPassword ? "Hide password" : "Show password"}>
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
               <label className='label'>
                 <a
                   onClick={handleForgetPassword}

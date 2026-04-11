@@ -5,9 +5,12 @@ const Recommend = () => {
   const [recommendations, setRecommendations] = useState(null);
   const [budgetData, setBudgetData] = useState(null);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRecommend = async (event) => {
     event.preventDefault();
+    setError(null);
+    setIsLoading(true);
     const form = event.target;
     const city = form.city.value;
     const typePlace = form.typePlace.value;
@@ -34,6 +37,8 @@ const Recommend = () => {
       setBudgetData(budgetData);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -99,8 +104,9 @@ const Recommend = () => {
           <div className='mb-6 text-center'>
             <button
               className='w-full mt-4 px-4 py-2 font-semibold text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 transition duration-200'
-              type='submit'>
-              Submit
+              type='submit'
+              disabled={isLoading}>
+              {isLoading ? "Generating Plan..." : "Submit"}
             </button>
           </div>
         </form>
@@ -119,7 +125,13 @@ const Recommend = () => {
       </div>
 
       <div className='md:w-1/2'>
-        {recommendations && (
+        {isLoading && (
+          <div className='mt-6 flex justify-center'>
+            <span className='loading loading-dots loading-lg text-primary'></span>
+          </div>
+        )}
+
+        {recommendations && !isLoading && (
           <div className='mt-6'>
             <h3 className='text-xl font-semibold'>Recommendations:</h3>
             <ul className='space-y-4'>
@@ -137,7 +149,7 @@ const Recommend = () => {
           </div>
         )}
 
-        {budgetData && (
+        {budgetData && !isLoading && (
           <div className='mt-6'>
             <h3 className='text-xl font-semibold'>Budget Breakdown:</h3>
             <ul className='space-y-2'>

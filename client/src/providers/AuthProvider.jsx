@@ -1,6 +1,14 @@
 import { createContext, useEffect, useState } from "react";
-import PropTypes from 'prop-types';
-import { GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
+import PropTypes from "prop-types";
+import {
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
 // import app from "../Firebase/firebase.config";
 import auth from "../Firebase/firebase.config";
 
@@ -10,82 +18,90 @@ export const AuthContext = createContext(null);
 const googleProvider = new GoogleAuthProvider();
 // const auth = getAuth(app);
 
-
 const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    console.log(user)
+  //Create User
 
-    //Create User
-
-    const createUser = (email, password) => {
-        setLoading(true);
-        return createUserWithEmailAndPassword(auth, email, password);
+  const createUser = (email, password) => {
+    if (!auth) {
+      return Promise.reject(new Error("Firebase is not configured"));
     }
+    setLoading(true);
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
 
-
-    // Update User
-    const updateUserProfile = (name, image) => {
-        return updateProfile(auth.currentUser, {
-            displayName: name,
-            photoURL: image
-        });
+  // Update User
+  const updateUserProfile = (name, image) => {
+    if (!auth || !auth.currentUser) {
+      return Promise.reject(new Error("Firebase is not configured"));
     }
+    return updateProfile(auth.currentUser, {
+      displayName: name,
+      photoURL: image,
+    });
+  };
 
-    // Login User
-    const logIn = (email, password) => {
-        setLoading(true);
-        return signInWithEmailAndPassword(auth, email, password);
+  // Login User
+  const logIn = (email, password) => {
+    if (!auth) {
+      return Promise.reject(new Error("Firebase is not configured"));
     }
+    setLoading(true);
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
-    // Google login
-    const googleLogin = () => {
-        setLoading(true);
-        return signInWithPopup(auth, googleProvider);
-
+  // Google login
+  const googleLogin = () => {
+    if (!auth) {
+      return Promise.reject(new Error("Firebase is not configured"));
     }
+    setLoading(true);
+    return signInWithPopup(auth, googleProvider);
+  };
 
-
-    const logOut = () => {
-        setUser(null);
-        setLoading(true);
-        return signOut(auth);
+  const logOut = () => {
+    setUser(null);
+    setLoading(true);
+    if (!auth) {
+      setLoading(false);
+      return Promise.resolve();
     }
+    return signOut(auth);
+  };
 
-
-
-    // Observer
-    useEffect(() => {
-        const unSubscribe = onAuthStateChanged(auth, currentUser => {
-            console.log("Observing current user inside useEffect of AuthProvider", currentUser);
-            setUser(currentUser);
-            setLoading(false);
-        });
-        return () => {
-            unSubscribe();
-        }
-    }, [])
-
-
-    const authInfo = {
-        user,
-        loading,
-        createUser,
-        updateUserProfile,
-        logIn,
-        logOut,
-        googleLogin
+  // Observer
+  useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
     }
-    return (
-        <AuthContext.Provider value={authInfo}>
-            {children}
-        </AuthContext.Provider>
-    );
+    const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => {
+      unSubscribe();
+    };
+  }, []);
+
+  const authInfo = {
+    user,
+    loading,
+    createUser,
+    updateUserProfile,
+    logIn,
+    logOut,
+    googleLogin,
+  };
+  return (
+    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
+  );
 };
 
 AuthProvider.propTypes = {
-    children: PropTypes.object,
-}
+  children: PropTypes.object,
+};
 
 export default AuthProvider;

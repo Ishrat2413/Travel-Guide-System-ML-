@@ -6,6 +6,8 @@ import { NODE_API_BASE_URL } from "../../config/api";
 export default function ItinerariesViewer({ userId }) {
   const [itineraries, setItineraries] = useState([]);
   const [selectedItinerary, setSelectedItinerary] = useState(null);
+  const [isLoadingList, setIsLoadingList] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     fetchItineraries();
@@ -13,6 +15,7 @@ export default function ItinerariesViewer({ userId }) {
 
   const fetchItineraries = async () => {
     try {
+      setIsLoadingList(true);
       const response = await fetch(
         `${NODE_API_BASE_URL}/itineraries/${userId}`,
       );
@@ -22,8 +25,14 @@ export default function ItinerariesViewer({ userId }) {
       }
     } catch (error) {
       console.error("Error fetching itineraries:", error);
+    } finally {
+      setIsLoadingList(false);
     }
   };
+
+  const filteredItineraries = itineraries.filter((itinerary) =>
+    itinerary.title?.toLowerCase().includes(searchText.toLowerCase()),
+  );
 
   const fetchItineraryDetails = async (id) => {
     try {
@@ -74,23 +83,40 @@ export default function ItinerariesViewer({ userId }) {
         <div className='card bg-base-100 shadow-xl'>
           <div className='card-body'>
             <h2 className='card-title mb-4'>Itinerary List</h2>
-            {itineraries.map((itinerary) => (
-              <div
-                key={itinerary._id}
-                className='flex items-center justify-center mb-2'>
-                <button
-                  className='btn btn-outline btn-block text-left justify-start flex-grow mr-2'
-                  onClick={() => fetchItineraryDetails(itinerary._id)}>
-                  {itinerary.title}
-                </button>
-                <button
-                  className='btn btn-square btn-sm btn-error'
-                  onClick={() => deleteItinerary(itinerary._id)}
-                  aria-label={`Delete ${itinerary.title}`}>
-                  <Trash2 size={16} />
-                </button>
+            <input
+              type='text'
+              className='input input-bordered mb-4'
+              placeholder='Search itineraries by title'
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            {isLoadingList ? (
+              <div className='flex justify-center py-8'>
+                <span className='loading loading-spinner loading-lg text-primary'></span>
               </div>
-            ))}
+            ) : filteredItineraries.length ? (
+              filteredItineraries.map((itinerary) => (
+                <div
+                  key={itinerary._id}
+                  className='flex items-center justify-center mb-2'>
+                  <button
+                    className='btn btn-outline btn-block text-left justify-start flex-grow mr-2'
+                    onClick={() => fetchItineraryDetails(itinerary._id)}>
+                    {itinerary.title}
+                  </button>
+                  <button
+                    className='btn btn-square btn-sm btn-error'
+                    onClick={() => deleteItinerary(itinerary._id)}
+                    aria-label={`Delete ${itinerary.title}`}>
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p className='text-sm text-base-content/70'>
+                No itineraries found.
+              </p>
+            )}
           </div>
         </div>
         <div className='card bg-base-100 shadow-xl'>

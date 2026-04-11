@@ -15,8 +15,13 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const hasFirebaseEnv = Object.values(firebaseConfig).every(Boolean);
 
-const auth = getAuth(app);
+let auth = null;
+
+if (hasFirebaseEnv) {
+  const app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+}
+
 export default auth;

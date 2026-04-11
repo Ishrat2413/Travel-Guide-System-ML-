@@ -10,9 +10,29 @@ export default function ItineraryBuilder({ userId }) {
     title: "",
     destinations: [],
   });
+  const [isSaving, setIsSaving] = useState(false);
 
   const saveItinerary = async () => {
+    if (!itinerary.title.trim()) {
+      Swal.fire({
+        title: "Missing title",
+        text: "Please add an itinerary title before saving.",
+        icon: "warning",
+      });
+      return;
+    }
+
+    if (!itinerary.destinations.length) {
+      Swal.fire({
+        title: "Add destination",
+        text: "Please add at least one destination before saving.",
+        icon: "warning",
+      });
+      return;
+    }
+
     try {
+      setIsSaving(true);
       const response = await fetch(`${NODE_API_BASE_URL}/itinerary`, {
         method: "POST",
         headers: {
@@ -31,6 +51,8 @@ export default function ItineraryBuilder({ userId }) {
       }
     } catch (error) {
       console.error("Error saving itinerary:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -199,8 +221,11 @@ export default function ItineraryBuilder({ userId }) {
         <button className='btn btn-primary' onClick={addDestination}>
           <PlusCircle size={16} className='mr-2' /> Add Destination
         </button>
-        <button className='btn btn-success' onClick={saveItinerary}>
-          Save Itinerary
+        <button
+          className='btn btn-success'
+          onClick={saveItinerary}
+          disabled={isSaving}>
+          {isSaving ? "Saving..." : "Save Itinerary"}
         </button>
       </div>
     </div>
@@ -208,5 +233,5 @@ export default function ItineraryBuilder({ userId }) {
 }
 
 ItineraryBuilder.propTypes = {
-  userId: PropTypes.object,
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
